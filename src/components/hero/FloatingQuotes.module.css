@@ -1,0 +1,182 @@
+/* ============================================================
+   FloatingQuotes — TikTok-style live comment feed
+   ============================================================ */
+
+/* ── Container ─────────────────────────────────────────────── */
+.feedContainer {
+  position: absolute;
+  right: var(--space-xl);
+  bottom: 110px; /* Aligned above the bottom dots and mute controls */
+  width: 320px;
+  max-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  z-index: 4; /* Above the video frame and overlay, below controls */
+  pointer-events: none; /* Let clicks pass through container */
+}
+
+/* ── Comment Card ──────────────────────────────────────────── */
+.commentCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align contents to the left side of the feed container */
+  padding: 6px 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  pointer-events: none; /* Let clicks pass through since there are no interactive cards */
+  opacity: 0;
+  will-change: transform, opacity, max-height, padding, margin;
+  text-align: left;
+  
+  /* Hero controls blending effect */
+  color: #ffffff;
+  mix-blend-mode: difference;
+  
+  /* Entry Animation */
+  animation: slideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Exiting State ─────────────────────────────────────────── */
+.commentCard.exiting {
+  animation: fadeOutCollapse 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Content Block ─────────────────────────────────────────── */
+.contentBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.quoteText {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-style: italic;
+  font-weight: 500; /* Medium weight for cleaner outline in difference mode */
+  color: #ffffff;
+  opacity: 0.9; /* High opacity for crisp readability */
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  word-wrap: break-word;
+}
+
+.quoteAuthor {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: #ffffff;
+  opacity: 0.6; /* Slightly lighter but still clear */
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes slideIn {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutCollapse {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+    max-height: 80px;
+    margin-bottom: 0;
+    padding: 6px 0;
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+/* ── Reduced Motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .commentCard {
+    animation: none;
+    opacity: 0.95;
+    transition: none;
+  }
+  .commentCard.exiting {
+    animation: none;
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: none;
+  }
+}
+
+/* ── Toggle Button ─────────────────────────────────────────── */
+.toggleButton {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: calc(var(--space-lg) + 64px);
+  z-index: 10;
+  background: rgba(10, 10, 10, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: 
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.toggleButton:hover {
+  background: rgba(20, 20, 20, 0.85);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transform: scale(1.02);
+}
+
+/* ── Responsive Styling ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .feedContainer {
+    right: var(--space-md);
+    left: var(--space-md);
+    width: auto;
+    max-height: 220px; /* Cap mobile height further to show only 2-3 items */
+    bottom: 120px;
+    gap: 6px;
+  }
+  
+  .commentCard {
+    padding: 8px 10px;
+  }
+
+  .quoteText {
+    font-size: var(--text-xs);
+  }
+
+  .toggleButton {
+    bottom: var(--space-md);
+    left: calc(var(--space-md) + 52px);
+    font-size: var(--text-xs);
+    padding: 8px 14px;
+  }
+}

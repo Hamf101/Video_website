@@ -1,0 +1,43 @@
+.main {
+  width: 100%;
+}
+
+.heroSection {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  margin-bottom: 0;
+  z-index: 0;
+}
+
+.librarySection {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-3xl) 0;
+  background-color: var(--bg-light);
+  color: var(--text-light-primary);
+}
+
+.formSection {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-4xl) 0;
+  background-color: var(--bg-light);
+  color: var(--text-light-primary);
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    margin-bottom: 0;
+  }
+
+  .librarySection {
+    padding: var(--space-2xl) 0;
+  }
+
+  .formSection {
+    padding: var(--space-2xl) 0;
+    margin-top: var(--space-2xl);
+  }
+}

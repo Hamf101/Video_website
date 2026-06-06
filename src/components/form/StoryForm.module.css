@@ -1,0 +1,214 @@
+/* ============================================================
+   StoryForm — story submission section
+   ============================================================ */
+
+.section {
+  width: 100%;
+  background: transparent;
+  padding: var(--space-4xl) 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-inline: var(--space-lg);
+}
+
+/* ---- Header ---- */
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 400;
+  color: var(--text-light-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  color: var(--text-light-secondary);
+  font-size: var(--text-base);
+  margin-top: var(--space-xs);
+}
+
+/* ---- Form grid ---- */
+
+.form {
+  margin-top: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Field ---- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: var(--text-sm);
+  color: var(--text-light-secondary);
+  margin-bottom: var(--space-xs);
+  font-weight: 500;
+}
+
+.required {
+  color: var(--text-light-muted);
+  margin-left: 2px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  background: var(--bg-light-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  color: var(--text-light-primary);
+  font-size: var(--text-base);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-light-muted);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--text-light-primary);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+/* Field-level error */
+.inputError {
+  border-color: hsl(0, 65%, 50%);
+}
+
+.inputError:focus {
+  border-color: hsl(0, 65%, 50%);
+  box-shadow: 0 0 0 3px hsla(0, 65%, 50%, 0.15);
+}
+
+.errorMessage {
+  font-size: var(--text-sm);
+  color: hsl(0, 65%, 55%);
+  margin-top: var(--space-xs);
+}
+
+/* ---- Submit button ---- */
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: var(--text-light-primary);
+  color: var(--bg-light);
+  font-weight: 600;
+  font-size: var(--text-base);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.submit:hover {
+  background: var(--text-light-secondary);
+  transform: translateY(-1px);
+}
+
+.submit:active {
+  transform: translateY(0);
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 600px) {
+  .submit {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .container {
+    padding-inline: var(--space-md);
+  }
+}
+
+/* ---- Spinner ---- */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--bg-void);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* ---- Success state ---- */
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+  padding: var(--space-3xl) 0;
+}
+
+.successIcon {
+  width: 56px;
+  height: 56px;
+  color: hsl(145, 55%, 48%);
+}
+
+.successHeading {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--text-light-primary);
+  font-weight: 400;
+}
+
+.successText {
+  color: var(--text-light-secondary);
+  font-size: var(--text-base);
+}

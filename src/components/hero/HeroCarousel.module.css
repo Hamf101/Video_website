@@ -1,0 +1,244 @@
+/* ============================================================
+   HeroCarousel — full-width cinematic video carousel
+   ============================================================ */
+
+/* ── Container ─────────────────────────────────────────────── */
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-void);
+}
+
+/* ── Slide track ───────────────────────────────────────────── */
+.track {
+  display: flex;
+  height: 100%;
+  transition: transform var(--duration-slow) var(--ease-out);
+  will-change: transform;
+}
+
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Poster image ──────────────────────────────────────────── */
+.poster {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 56.25vw; /* 16:9 aspect ratio (9/16 * 100) */
+  min-height: 100vh;
+  min-width: 177.77vh; /* 16:9 aspect ratio (16/9 * 100) */
+  z-index: var(--z-base);
+  pointer-events: none; /* Let overlay handle clicks */
+}
+
+.videoFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Push YouTube branding offscreen by making iframe 250% height */
+iframe.videoFrame {
+  height: 250%;
+  pointer-events: none; /* Let overlay handle clicks */
+}
+
+@keyframes hidePoster {
+  0% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+.videoCover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 56.25vw;
+  min-height: 100vh;
+  min-width: 177.77vh;
+  object-fit: cover;
+  pointer-events: none;
+  z-index: 2; /* above iframe, below overlay */
+  animation: hidePoster 2.5s ease-out forwards;
+}
+
+/* ── Click Overlay ─────────────────────────────────────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: transparent;
+}
+
+/* ── Navigation arrows ─────────────────────────────────────── */
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  opacity: 0.6;
+  outline: none;
+  mix-blend-mode: difference;
+}
+
+.arrow:hover,
+.arrow:focus-visible {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+  outline: none;
+}
+
+.arrowPrev {
+  left: var(--space-md);
+}
+
+.arrowNext {
+  right: var(--space-md);
+}
+
+.arrowIcon {
+  width: 32px;
+  height: 32px;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+/* ── Dot indicators ────────────────────────────────────────── */
+.dots {
+  position: absolute;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  gap: var(--space-sm);
+  list-style: none;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(150, 150, 150, 0.15);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
+}
+
+.dot:hover {
+  background: rgba(150, 150, 150, 0.25);
+}
+
+.dotActive {
+  background: rgba(150, 150, 150, 0.35);
+  transform: scale(1.35);
+}
+
+.dotActive:hover {
+  background: rgba(150, 150, 150, 0.45);
+}
+
+/* ── Mute Button ───────────────────────────────────────────── */
+.muteButton {
+  position: absolute;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--duration-normal) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+  opacity: 0.6;
+  color: #ffffff;
+  outline: none;
+  mix-blend-mode: difference;
+}
+
+.muteButton:hover,
+.muteButton:focus-visible {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.muteIcon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: stroke var(--duration-fast) var(--ease-out);
+}
+
+/* ── Hide arrows when single slide ─────────────────────────── */
+.arrowHidden {
+  display: none;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .carousel {
+    height: 100%;
+  }
+
+  .arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .arrowIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .arrowPrev {
+    left: var(--space-sm);
+  }
+
+  .arrowNext {
+    right: var(--space-sm);
+  }
+
+  .muteButton {
+    bottom: var(--space-md);
+    right: var(--space-md);
+    width: 40px;
+    height: 40px;
+  }
+
+  .muteIcon {
+    width: 18px;
+    height: 18px;
+  }
+}

@@ -1,0 +1,144 @@
+/* ============================================================
+   VideoLibrary — sidebar TOC + category sections layout
+   ============================================================ */
+
+.wrapper {
+  display: flex;
+  gap: var(--space-xl);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-lg) var(--space-4xl);
+}
+
+/* ── Sidebar (desktop) ────────────────────────────────────── */
+.sidebar {
+  flex-shrink: 0;
+  width: 160px;
+  position: sticky;
+  top: var(--space-2xl);
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.tocButton {
+  display: block;
+  position: relative;
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-light-muted);
+  text-align: left;
+  border-left: 2px solid transparent; /* Keep for spacing, make pseudo-element overlay it */
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tocButton::before {
+  content: '';
+  position: absolute;
+  left: -2px; /* Pull back over the transparent border */
+  top: var(--space-xs);
+  bottom: var(--space-xs);
+  width: 2px;
+  background-color: var(--text-light-primary);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.tocButton:hover {
+  color: var(--text-light-secondary);
+}
+
+.tocButtonActive {
+  color: var(--text-light-primary);
+}
+
+.tocButtonActive::before {
+  transform: scaleY(1);
+  opacity: 1;
+}
+
+/* ── Content area ─────────────────────────────────────────── */
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xl);
+}
+
+/* ── Category section ─────────────────────────────────────── */
+.section {
+  scroll-margin-top: var(--space-2xl);
+}
+
+.sectionLabel {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-light-muted);
+  margin-bottom: var(--space-md);
+}
+
+/* ── Mobile: horizontal scrollable tabs ───────────────────── */
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-2xl) var(--space-md) var(--space-3xl);
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--space-xs);
+    padding-bottom: var(--space-xs);
+
+    /* Hide scrollbar but keep scrollable */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tocButton {
+    flex-shrink: 0;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    padding: var(--space-xs) var(--space-sm);
+    white-space: nowrap;
+  }
+
+  .tocButton::before {
+    left: var(--space-sm);
+    right: var(--space-sm);
+    top: auto;
+    bottom: -2px; /* over the transparent border */
+    width: auto;
+    height: 2px;
+    transform: scaleX(0);
+  }
+
+  .tocButtonActive {
+    border-left-color: transparent;
+    /* bottom border is handled by the pseudo-element */
+  }
+
+  .tocButtonActive::before {
+    transform: scaleX(1);
+  }
+}
