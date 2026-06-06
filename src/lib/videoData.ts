@@ -62,7 +62,7 @@ export const VIDEOS: Video[] = [
     category: 'voices',
     duration: '10:26',
     source: 'self-hosted',
-    videoId: '/IMG_3851.webm',
+    videoId: 'https://g0ajugqlpdgho5xr.public.blob.vercel-storage.com/videos/IMG_3851.webm',
     poster: '/IMG_3851_poster.jpg',
     featured: true,
   },
