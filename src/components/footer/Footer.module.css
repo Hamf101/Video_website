@@ -31,10 +31,4 @@
   .footer {
     padding: var(--space-2xl) var(--space-md);
   }
-
-  .inner {
-    flex-direction: column;
-    gap: var(--space-sm);
-    text-align: center;
-  }
 }
