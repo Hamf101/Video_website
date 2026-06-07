@@ -55,17 +55,15 @@
   z-index: 30;
   width: 48px;
   height: 48px;
-  background: rgba(0, 0, 0, 0.5);
+  background: transparent;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: 50%;
   cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-out),
-              background var(--duration-fast) var(--ease-out);
-  opacity: 1;
+  transition: transform var(--duration-fast) var(--ease-out);
+  opacity: 0.8;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -73,7 +71,6 @@
 .closeButton:hover {
   opacity: 1;
   transform: scale(1.1);
-  background: rgba(0, 0, 0, 0.7);
 }
 
 /* ── Split Layout: Top (Dark) ────────────────────────────────── */
