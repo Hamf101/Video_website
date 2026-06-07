@@ -161,7 +161,7 @@
     left: var(--space-md);
     width: auto;
     max-height: 220px; /* Cap mobile height further to show only 2-3 items */
-    bottom: 120px;
+    bottom: 140px;
     gap: 6px;
   }
   
@@ -174,7 +174,7 @@
   }
 
   .toggleButton {
-    bottom: var(--space-md);
+    bottom: 90px;
     left: calc(var(--space-md) + 52px);
     font-size: var(--text-xs);
     padding: 8px 14px;

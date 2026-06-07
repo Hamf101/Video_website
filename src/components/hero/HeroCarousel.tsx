@@ -32,8 +32,9 @@ interface HeroCarouselProps {
 export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): React.JSX.Element {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [isMuted, setIsMuted] = useState<boolean>(true);
-  const isMutedRef = useRef<boolean>(isMuted);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [hasInteracted, setHasInteracted] = useState<boolean>(false);
+  const isMutedRef = useRef<boolean>(false);
 
   useEffect(() => {
     isMutedRef.current = isMuted;
@@ -42,6 +43,54 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
   const carouselRef = useRef<HTMLDivElement>(null);
   const mediaRefs = useRef<(HTMLIFrameElement | HTMLVideoElement | null)[]>([]);
   const slideCount = videos.length;
+
+  // Try to autoplay the first video with audio. If the browser blocks it,
+  // fall back to muted autoplay and unmute on the first user interaction.
+  useEffect(() => {
+    const firstMedia = mediaRefs.current[0];
+    if (!firstMedia || !('play' in firstMedia)) return;
+
+    const vid = firstMedia as HTMLVideoElement;
+    vid.muted = false;
+
+    vid.play().then(() => {
+      // Unmuted autoplay succeeded — audio is playing
+      setIsMuted(false);
+      isMutedRef.current = false;
+      setHasInteracted(true);
+    }).catch(() => {
+      // Browser blocked unmuted autoplay — fall back to muted
+      vid.muted = true;
+      setIsMuted(true);
+      isMutedRef.current = true;
+      vid.play().catch(() => {});
+
+      // Unmute on first user interaction
+      const unmuteOnInteraction = () => {
+        vid.muted = false;
+        setIsMuted(false);
+        isMutedRef.current = false;
+        setHasInteracted(true);
+
+        // Also unmute any YouTube iframe that might be active
+        mediaRefs.current.forEach((media, idx) => {
+          if (!media) return;
+          if (idx === 0 && 'contentWindow' in media && media.contentWindow) {
+            media.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+          }
+        });
+
+        document.removeEventListener('click', unmuteOnInteraction);
+        document.removeEventListener('touchstart', unmuteOnInteraction);
+        document.removeEventListener('keydown', unmuteOnInteraction);
+      };
+
+      document.addEventListener('click', unmuteOnInteraction, { once: true });
+      document.addEventListener('touchstart', unmuteOnInteraction, { once: true });
+      document.addEventListener('keydown', unmuteOnInteraction, { once: true });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Track visited slides to keep them mounted and preserve video state
   const visitedRef = useRef<Set<number>>(new Set([0]));
@@ -78,9 +127,22 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
   }, [goToPrev, goToNext]);
 
   const togglePlay = useCallback(() => {
-    if (videos[activeIndex]?.source === 'youtube') return;
     const media = mediaRefs.current[activeIndex];
     if (!media) return;
+
+    if (videos[activeIndex]?.source === 'youtube') {
+      if ('contentWindow' in media && media.contentWindow) {
+        if (isPlaying) {
+          media.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          setIsPlaying(false);
+        } else {
+          media.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          setIsPlaying(true);
+        }
+      }
+      return;
+    }
+
     if (isPlaying) {
       if ('pause' in media) (media as HTMLVideoElement).pause();
       setIsPlaying(false);
@@ -93,6 +155,7 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
   const toggleMute = useCallback(() => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
+    setHasInteracted(true);
     mediaRefs.current.forEach((media, idx) => {
       if (!media) return;
       const shouldMute = idx === activeIndex ? newMuted : true;
@@ -178,7 +241,7 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
                      * 
                      * Key parameters:
                      *   autoplay=1        — begin playing immediately on mount
-                     *   mute=1            — required for autoplay in all browsers
+                     *   mute=1            — required for autoplay in all browsers (unmuted via JS on first interaction)
                      *   controls=0        — hide all YouTube UI chrome
                      *   loop=1            — loop the video indefinitely
                      *   playlist=...      — required for loop to work on a single video
@@ -203,11 +266,9 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
                     ref={(el) => { mediaRefs.current[index] = el; }}
                     src={video.videoId}
                     className={styles.videoFrame}
-                    autoPlay={index === 0}
-                    muted={isMuted}
+                    autoPlay
                     loop
                     playsInline
-                    poster={video.poster}
                     preload={index === 0 ? 'auto' : 'none'}
                     style={{ objectFit: 'cover' }}
                   />
@@ -232,6 +293,30 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
           </article>
         ))}
       </div>
+
+      {/* ── Tap to Unmute Overlay ────────────────────────────── */}
+      {!hasInteracted && isMuted && (
+        <button
+          className={styles.unmuteOverlayButton}
+          onClick={(e) => {
+            // The document event listener will also fire and handle the actual unmute,
+            // but we can ensure interaction state is updated here just in case.
+            setHasInteracted(true);
+            toggleMute();
+          }}
+          type="button"
+          aria-label="Tap to unmute"
+        >
+          <div className={styles.unmuteOverlayIconWrapper}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.unmuteOverlayIcon}>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </div>
+          <span className={styles.unmuteOverlayText}>Tap to Unmute</span>
+        </button>
+      )}
 
       {/* ── Previous arrow ──────────────────────────────────── */}
       <button
