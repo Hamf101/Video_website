@@ -54,53 +54,53 @@ export default function QueryVideoModal() {
         role="dialog"
         aria-modal="true"
       >
-        <div className={styles.stickyCloseWrapper}>
-          <button 
-            className={styles.closeButton} 
-            onClick={onDismiss}
-            aria-label="Close modal"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
+        <button 
+          className={styles.closeButton} 
+          onClick={onDismiss}
+          aria-label="Close modal"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
 
-        <div className={styles.topHalf}>
-          <div className={styles.playerWrapper}>
-            {video.source === 'youtube' ? (
-              <LiteYouTube videoId={video.videoId} title={video.title} />
-            ) : (
-              <video 
-                src={video.videoId} 
-                controls 
-                preload="none"
-                poster={video.poster}
-                style={{ width: '100%', height: '100%', backgroundColor: 'black', objectFit: 'contain' }} 
-              />
+        <div className={styles.modalScroll}>
+          <div className={styles.topHalf}>
+            <div className={styles.playerWrapper}>
+              {video.source === 'youtube' ? (
+                <LiteYouTube videoId={video.videoId} title={video.title} />
+              ) : (
+                <video 
+                  src={video.videoId} 
+                  controls 
+                  preload="none"
+                  poster={video.poster}
+                  style={{ width: '100%', height: '100%', backgroundColor: 'black', objectFit: 'contain' }} 
+                />
+              )}
+            </div>
+          </div>
+
+          <div className={styles.bottomHalf}>
+            <span className={styles.categoryBadge}>{categoryLabel}</span>
+            <h1 className={styles.title}>{video.title}</h1>
+            <p className={styles.description}>{video.description}</p>
+            <div className={styles.metaRow}>
+              <span className={styles.duration}>{video.duration}</span>
+            </div>
+
+            {relatedVideos.length > 0 && (
+              <section className={styles.relatedSection}>
+                <h2 className={styles.relatedTitle}>More from {categoryLabel}</h2>
+                <div className={styles.relatedGrid}>
+                  {relatedVideos.map((v) => (
+                    <VideoCard key={v.slug} video={v} />
+                  ))}
+                </div>
+              </section>
             )}
           </div>
-        </div>
-
-        <div className={styles.bottomHalf}>
-          <span className={styles.categoryBadge}>{categoryLabel}</span>
-          <h1 className={styles.title}>{video.title}</h1>
-          <p className={styles.description}>{video.description}</p>
-          <div className={styles.metaRow}>
-            <span className={styles.duration}>{video.duration}</span>
-          </div>
-
-          {relatedVideos.length > 0 && (
-            <section className={styles.relatedSection}>
-              <h2 className={styles.relatedTitle}>More from {categoryLabel}</h2>
-              <div className={styles.relatedGrid}>
-                {relatedVideos.map((v) => (
-                  <VideoCard key={v.slug} video={v} />
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </div>
     </div>
