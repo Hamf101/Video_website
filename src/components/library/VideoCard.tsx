@@ -20,7 +20,7 @@ interface VideoCardProps {
  */
 export default function VideoCard({ video }: VideoCardProps): React.JSX.Element {
   return (
-    <Link href={`/?v=${video.slug}`} scroll={false} className={styles.card}>
+    <Link href={`/?v=${video.slug}`} scroll={false} prefetch={false} className={styles.card}>
       <div className={styles.thumbnailContainer}>
         {video.poster ? (
           <Image

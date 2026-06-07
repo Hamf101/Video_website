@@ -65,7 +65,7 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
       isMutedRef.current = true;
       vid.play().catch(() => {});
 
-      // Unmute on first user interaction
+      // Unmute on first user interaction within the carousel
       const unmuteOnInteraction = () => {
         vid.muted = false;
         setIsMuted(false);
@@ -80,14 +80,20 @@ export default function HeroCarousel({ videos, quotes }: HeroCarouselProps): Rea
           }
         });
 
-        document.removeEventListener('click', unmuteOnInteraction);
-        document.removeEventListener('touchstart', unmuteOnInteraction);
-        document.removeEventListener('keydown', unmuteOnInteraction);
+        const carouselNode = carouselRef.current;
+        if (carouselNode) {
+          carouselNode.removeEventListener('click', unmuteOnInteraction);
+          carouselNode.removeEventListener('touchstart', unmuteOnInteraction);
+          carouselNode.removeEventListener('keydown', unmuteOnInteraction);
+        }
       };
 
-      document.addEventListener('click', unmuteOnInteraction, { once: true });
-      document.addEventListener('touchstart', unmuteOnInteraction, { once: true });
-      document.addEventListener('keydown', unmuteOnInteraction, { once: true });
+      const carouselNode = carouselRef.current;
+      if (carouselNode) {
+        carouselNode.addEventListener('click', unmuteOnInteraction, { once: true });
+        carouselNode.addEventListener('touchstart', unmuteOnInteraction, { once: true });
+        carouselNode.addEventListener('keydown', unmuteOnInteraction, { once: true });
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
